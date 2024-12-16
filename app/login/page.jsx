@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from '../components/navbar'
 import Login from '../components/login'
+import { Toaster } from 'react-hot-toast'
 
 
 
@@ -9,8 +10,12 @@ import Login from '../components/login'
 export default function page() {
   return (
     <>
-    <Navbar/>
-    <Login/>
-  </>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
+      <Navbar />
+      <Login />
+    </>
   )
 }

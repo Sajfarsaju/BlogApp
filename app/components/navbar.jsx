@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link"
+import { useAuth } from "../context/authContext";
+import { useRouter } from "next/navigation";
 
 
-export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
+export default function Navbar({createBlogForm, setCreateBlogForm}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, token, logoutAuth } = useAuth();
+  const router = useRouter();
+
+
+
+  const handleLogout = () => {
+    logoutAuth(); // Call the logout function to remove the token and user from state and localStorage
+  };
+
+  
   return (
     <nav className="bg-white shadow-md w-full z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,13 +28,37 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/login" className="text-gray-700 hover:text-blue-600">
-              Log in
-            </Link>
-            
-            <Link href="/signup" className="py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-500">
-              Sign up
-            </Link>
+            {/* Display 'Log in' and 'Sign up' links if the user is not authenticated */}
+            {!token ? (
+              <>
+                <Link href="/login" className="text-gray-700 hover:text-blue-600">
+                  Log in
+                </Link>
+
+                <Link
+                  href="/signup"
+                  className="py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-500"
+                >
+                  Sign up
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Display 'Profile' or 'Logout' if the user is authenticated */}
+                <button
+                  onClick={() => router.push("/create_blog")}
+                  className="py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-500"
+                >
+                  Create blog
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-blue-600"
+                >
+                  Log out
+                </button>
+              </>
+            )}
           </div>
           <div className="md:hidden">
             <button
@@ -57,23 +93,31 @@ export default function Navbar() {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
+        <div className="md:hidden bg-white border-t border-gray-200">``
           <div className="px-2 py-4 space-y-2">
-            <Link href="/" className="block text-gray-700 hover:text-blue-600">
-              Home
-            </Link>
-            <Link href="/about" className="block text-gray-700 hover:text-blue-600">
-              About
-            </Link>
-            <Link href="/services" className="block text-gray-700 hover:text-blue-600">
-              Services
-            </Link>
-            <Link href="/contact" className="block text-gray-700 hover:text-blue-600">
-              Contact
-            </Link>
+            {/* Conditionally render 'Log in' and 'Sign up' for non-authenticated users */}
+            {!token ? (
+              <>
+                <Link href="/login" className="block text-gray-700 hover:text-blue-600">
+                  Log in
+                </Link>
+                <Link href="/signup" className="block py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-500">
+                  Sign up
+                </Link>
+              </>
+            ) : (
+              // Display 'Log out' for authenticated users
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left text-gray-700 hover:text-blue-600"
+              >
+                Log out
+              </button>
+            )}
           </div>
         </div>
       )}
     </nav>
+
   )
 }
