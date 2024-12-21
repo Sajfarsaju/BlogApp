@@ -13,9 +13,9 @@ export default function Login() {
   const { loginAuth } = useAuth();
   const router = useRouter();
 
-  const { formData, backendErrors, handleChange, handleSubmit } = useForm(
+  const { formData, setFormData, backendErrors, handleChange, handleSubmit } = useForm(
     { email: "", password: "" }, 
-    loginAPI // Pass login function to useForm
+    loginAPI
   );
 
   const onSubmit = async (e) => {
@@ -27,6 +27,7 @@ export default function Login() {
       loginAuth({ name, email }, token);
       router.push('/');
       toast.success("Login successful!");
+      setFormData({ email: "", password: "" })
     }
   };
 
@@ -87,7 +88,7 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-lg bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-500"
+              className="flex w-full justify-center rounded-lg bg-blueColor px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-blueColorHover"
             >
               Sign in
             </button>
@@ -95,7 +96,7 @@ export default function Login() {
         </form>
         <p className="mt-6 text-center">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-800 ml-1">
+          <Link href="/signup" className="text-blueColor ml-1">
             Sign up
           </Link>
         </p>

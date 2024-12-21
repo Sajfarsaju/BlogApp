@@ -1,25 +1,29 @@
 "use client";
 
 import Link from 'next/link'
-import Axios_Instance from '../api/axios'
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import useForm from "../customeHook/useForm";
 import { signupApi } from "../api/auth";
+import { useAuth } from '../context/authContext';
 
 export default function Signup() {
   const router = useRouter();
+  const { loginAuth } = useAuth();
   
-  const { formData, backendErrors, handleChange, handleSubmit } = useForm(
+  const { formData, setFormData, backendErrors, handleChange, handleSubmit } = useForm(
     { name: "", email: "", password: "" }, 
-    signupApi // Pass signup function to useForm
+    signupApi
   );
 
   const onSubmit = async (e) => {
     const responseData = await handleSubmit(e);
     if (responseData) {
+      const { name, email, token } = responseData;
+      loginAuth({ name, email }, token);
       router.push('/');
-      toast.success("Signup successful!");
+      setFormData({ name: "", email: "", password: "" })
+      toast.success("Welcome");
     }
   };
   return (
@@ -97,7 +101,7 @@ export default function Signup() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-lg bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-lg bg-blueColor px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-blueColorHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Create account
             </button>
@@ -105,7 +109,7 @@ export default function Signup() {
         </form>
         <p className="mt-6 text-center">
           Already have an account?{' '}
-          <Link href={'/login'} className="text-blue-800 ml-1">
+          <Link href={'/login'} className="text-blueColor ml-1">
             Log in
           </Link>
         </p>
